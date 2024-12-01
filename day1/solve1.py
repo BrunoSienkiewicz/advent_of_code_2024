@@ -1,0 +1,1 @@
+print(sum([abs(sorted([int(l.split("   ")[0]) for l in open("input1.txt").readlines()])[i] - sorted([int(l.split("   ")[1].replace("\n", "")) for l in open("input1.txt").readlines()])[i]) for i in range(len(open("input1.txt").readlines()))]))
