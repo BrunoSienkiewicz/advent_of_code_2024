@@ -1,0 +1,1 @@
+abc_do()_mul(1,1)_don't()_mul(1,1)_mul(1,1)_do()_mul(1,1)

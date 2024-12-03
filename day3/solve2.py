@@ -4,14 +4,10 @@ from collections import defaultdict
 with open("input1.txt") as f:
     input = f.read()
 
-
-dos_iter = re.finditer(r"do\(\)", input)
-donts_iter = re.finditer(r"don\'t\(\)", input)
-
-do = next(dos_iter).start()
-dont = next(donts_iter).start()
-prev_do = 0
-prev_dont = -1
+do = [0] + [d.start() for d in re.finditer(r"do\(\)", input)] + [len(input)]
+dont = [-1] + [d.start() for d in re.finditer(r"don\'t\(\)", input)] + [len(input)]
+do_ptr = 1
+dont_ptr = 1
 
 res = 0
 
@@ -25,22 +21,16 @@ res = 0
 for m in re.finditer(r"mul\(\d+,\d+\)", input):
     mul = input[m.start() : m.end()]
 
-    while dont < m.start():
-        prev_dont = dont
-        try:
-            dont = next(donts_iter).start()
-        except StopIteration:
-            dont = 999998
+    if dont_ptr < len(dont):
+        while dont[dont_ptr] < m.start():
+            dont_ptr += 1
 
-    while do < m.start():
-        prev_do = do
-        try:
-            do = next(donts_iter).start()
-        except StopIteration:
-            do = 999999
+    if do_ptr < len(do):
+        while do[do_ptr] < m.start():
+            do_ptr += 1
 
-    print(f"do={prev_do}", f"dont={prev_dont}", f"start={m.start()}", res)
-    if prev_dont < m.start() and prev_do < prev_dont:
+    print(f"do={do[do_ptr-1]}", f"dont={dont[dont_ptr-1]}", f"start={m.start()}", res)
+    if dont[dont_ptr - 1] < m.start() and do[do_ptr - 1] < dont[dont_ptr - 1]:
         print("dont mul")
         continue
     n = mul.replace("mul(", "")
