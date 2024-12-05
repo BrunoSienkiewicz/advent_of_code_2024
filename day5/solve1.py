@@ -18,48 +18,42 @@ for edge in _graph:
     graph[int(v)]
 
 
-def is_valid(l1: list[int], l2: list[int]):
-    if len(l1) == 0:
-        return True
-    if len(l2) == 0:
-        return True
-    i, j = 0, 0
-
-    while i < len(l1):
-        if j == len(l2):
-            break
-        if l1[i] == l2[j]:
-            j += 1
-        i += 1
-    return True if len(l2) == j else False
-
-
 def dfs(n: int, l: list[int], path: list[int]):
-    if not is_valid(l, path):
-        return False
-    if len(path) == len(l):
-        return True
-    if n in vis:
+    if n in vis:  # check for cycle
         return False
 
     vis.add(n)
     if n in l:
         path.append(n)
-    print(path)
+
+    if l == path:  # found proper order
+        return True
+    if l[: len(path)] != path:  # order is violated
+        vis.remove(n)
+        if n in l:
+            path.pop()
+        return False
+
     res = False
     for nei in graph[n]:
         if dfs(nei, l, path):
             res = True
             break
     vis.remove(n)
+    if n in l:
+        path.pop()
     return res
 
 
 res = []
+_total = len(lists)
+_progress = 0
 for l in lists:
+    print(f"{_progress}/{_total}")
     vis = set()
     if dfs(l[0], l, []):
         res.append(l)
+    _progress += 1
 print(res)
 res_sum = 0
 
